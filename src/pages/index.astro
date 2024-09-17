@@ -1,21 +1,26 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/landing/Hero.astro";
-import Why from "../components/landing/Why.astro";
+import Letter from "../components/landing/Letter.astro";
 // import SectionOne from "../components/landing/SectionOne.astro";
 // import SectionTwo from "../components/landing/SectionTwo.astro";
 // import Testimonial from "../components/global/Testimonial.astro";
 // import Pricing from "../components/landing/Pricing.astro";
 // import Cta from "../components/global/Cta.astro";
----
-<BaseLayout>
 
+const metadata = {
+  title: "Covault - Simplify Your LLC Management",
+  description: "Covault is the operating system for your LLC investments and operations. Simplify management, gain insights, and focus on growth.",
+};
+---
+<BaseLayout metadata={metadata}>
+  <div class="px-4 sm:px-12 lg:mx-24 flex flex-col gap-12">
   <Hero />
-  <Why />
+  <Letter />
   <!-- <SectionOne />
   <SectionTwo />
   <Testimonial />
   <Pricing />
   <Cta /> -->
-
+</div>
 </BaseLayout>
