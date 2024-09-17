@@ -1,0 +1,27 @@
+<div class="flex gap-3 mt-10 w-max max-w-xl font-sans">
+    <form id="waitlist-form" class="flex flex-row flex-wrap gap-3 w-full ">
+      <input
+        type="email"
+        placeholder="Enter your email"
+        class="flex-grow grow w-xs h-12 px-4 rounded-sm border-2 border-gray-300 focus:outline-none focus:border-black"
+        required
+      />
+      <button
+        type="submit"
+        class="group hover:cursor-pointer items-center justify-center h-12 font-medium rounded-sm inline-flex bg-black border-2 border-black duration-200 lg:w-auto px-6 py-3 text-center text-white w-full sm:w-auto"
+      >
+        Join the waitlist<span class="w-1 group-hover:w-4 duration-200 ease-in-out"></span> &nbsp; &rarr;
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('waitlist-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value;
+      // Here you would typically send the email to your server or a third-party service
+      console.log('Email submitted:', email);
+      alert('Thank you for joining the waitlist!');
+      this.reset();
+    });
+  </script>
