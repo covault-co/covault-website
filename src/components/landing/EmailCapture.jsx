@@ -30,7 +30,7 @@ const EmailCapture = () => {
   };
 
   return (
-    <div className="flex gap-3 mt-10 w-max max-w-full md:max-w-xl font-sans">
+    <div className="flex gap-3 mt-10 md:max-w-xl font-sans">
       <form onSubmit={handleSubmit} className="flex flex-row flex-wrap gap-3 w-full">
         <input
           type="email"

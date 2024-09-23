@@ -10,17 +10,19 @@ import Letter from "../components/landing/Letter.astro";
 
 const metadata = {
   title: "Covault - Simplify Your LLC Management",
-  description: "Covault is the operating system for your LLC investments and operations. Simplify management, gain insights, and focus on growth.",
+  description:
+    "Covault is the operating system for your LLC investments and operations. Simplify management, gain insights, and focus on growth.",
 };
 ---
+
 <BaseLayout metadata={metadata}>
-  <div class="px-4 sm:px-12 lg:mx-24 flex flex-col gap-12">
-  <Hero />
-  <Letter />
-  <!-- <SectionOne />
+  <div class="px-4 sm:px-12 max-w-screen-lg mx-auto flex flex-col gap-12">
+    <Hero />
+    <Letter />
+    <!-- <SectionOne />
   <SectionTwo />
   <Testimonial />
   <Pricing />
   <Cta /> -->
-</div>
+  </div>
 </BaseLayout>
