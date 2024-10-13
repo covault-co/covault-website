@@ -32,3 +32,28 @@
     font-family: InterVariable, sans-serif;
   }
 }
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
+  }
+}
+
+.glow {
+  animation: glow 1s ease-in-out;
+}
+
+@keyframes pulse-slow {
+  0%, 100% { transform: scale(1); opacity: 0.05; }
+  50% { transform: scale(1.05); opacity: 0.1; }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 10s infinite ease-in-out;
+}
