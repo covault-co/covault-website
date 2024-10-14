@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import OperatingAgreement from './OperatingAgreement';
 
 const DocumentScan = () => {
@@ -8,6 +8,7 @@ const DocumentScan = () => {
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [scanStatus, setScanStatus] = useState('Processing');
 
+    const containerRef = useRef(null);
 
     const documents = [
         { name: 'Acme Realty', type: 'Operating Agreement' },
@@ -25,34 +26,66 @@ const DocumentScan = () => {
     ];
 
     useEffect(() => {
-        const animationDuration = 3000; // 5 seconds for full cycle
-        const frameDuration = 1000 / 60; // 60 fps
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    observer.unobserve(entries[0].target);
+                    startAnimation();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        }
+
+        return () => {
+            if (containerRef.current) {
+                observer.unobserve(containerRef.current);
+            }
+        };
+    }, []);
+
+    const startAnimation = () => {
+        const animationDuration = 3000;
+        const frameDuration = 1000 / 60;
         const totalFrames = Math.round(animationDuration / frameDuration);
         let frame = 0;
+        let docIndex = 0;
 
-        const timer = setInterval(() => {
-            frame = (frame + 1) % totalFrames;
+        const animate = () => {
+            frame++;
             const progress = frame / totalFrames;
 
             if (progress < 0.8) {
-                // Scanning animation
                 setScanProgress(Math.min((progress / 0.8) * 100, 100));
                 setIsTransitioning(false);
                 setScanStatus('Processing');
-            } else {
-                // Transition to next document
+            } else if (docIndex < documents.length - 1) {
                 setIsTransitioning(true);
                 setScanProgress(0);
-                setScanStatus('Complete')
+                setScanStatus('Complete');
                 if (progress > 0.95) {
-                    setCurrentDocIndex((prevIndex) => (prevIndex + 1) % documents.length);
+                    docIndex++;
+                    setCurrentDocIndex(docIndex);
                     setActiveDoc((prevDoc) => (prevDoc === 0 ? 1 : 0));
+                    frame = 0;
                 }
+            } else {
+                // For the last document, keep it visible and set status to complete
+                setScanProgress(100);
+                setIsTransitioning(false);
+                setScanStatus('Complete');
             }
-        }, frameDuration);
 
-        return () => clearInterval(timer);
-    }, [documents.length]);
+            if (docIndex < documents.length - 1 || frame < totalFrames) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
+    };
 
     const getDocumentStyle = (docIndex) => {
         if (docIndex === activeDoc) {
@@ -71,7 +104,7 @@ const DocumentScan = () => {
     };
 
     return (
-        <div className="w-full bg-gray-50 p-8 rounded-xl border flex flex-col gap-6">
+        <div ref={containerRef} className="w-full bg-gray-50 p-8 rounded-xl border flex flex-col gap-6">
             <div>
                 <h2 className="mt-4 text-2xl leading-6 text-black font-display tracking-tight">Get organized while you sleep</h2>
                 <p className="mt-2 text-gray-500 text-sm text-pretty max-w-lg">
@@ -102,14 +135,14 @@ const DocumentScan = () => {
                             <div key={index} className="flex flex-col p-2 rounded">
                                 <span className="text-sm font-medium text-gray-400">{item.key}</span>
                                 <div className="relative overflow-hidden flex items-center">
-                                        <span
-                                            className="text-sm text-zinc-800 font-mono transition-opacity duration-500 ease-in-out"
-                                            style={{
-                                                opacity: scanProgress >= item.position ? 1 : 0,
-                                            }}
-                                        >
-                                            {item.value[currentDocIndex]}
-                                        </span>
+                                    <span
+                                        className="text-sm text-zinc-800 font-mono transition-opacity duration-500 ease-in-out"
+                                        style={{
+                                            opacity: scanProgress >= item.position ? 1 : 0,
+                                        }}
+                                    >
+                                        {item.value[currentDocIndex]}
+                                    </span>
                                 </div>
                             </div>
                         ))}

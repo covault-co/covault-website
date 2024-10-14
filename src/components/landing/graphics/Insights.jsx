@@ -71,10 +71,14 @@ const Insights = () => {
     },
   ];
 
-  const generateRealisticSparklineData = (trend) => {
+  const generateSparklineData = (change) => {
+    const trendStrength = Math.min(Math.abs(change) / 10, 1); // Normalize the trend strength
+    const trend = change >= 0 ? 1 : -1;
     let value = 50 + Math.random() * 20;
-    return Array.from({ length: 10 }, () => {
-      value += (Math.random() - 0.5) * 10 * trend;
+    return Array.from({ length: 10 }, (_, i) => {
+      const randomFactor = Math.random() * 2 - 1; // Random value between -1 and 1
+      const trendFactor = (i / 9) * trendStrength * trend; // Gradually increase trend influence
+      value += (randomFactor + trendFactor) * 5;
       return { value: Math.max(0, Math.min(100, value)) };
     });
   };
@@ -107,22 +111,22 @@ const Insights = () => {
                   <MetricCell 
                     value={`$${company.capitalAccount.toLocaleString()}`} 
                     change={company.capitalAccountChange.toFixed(1)} 
-                    sparklineData={generateRealisticSparklineData(company.capitalAccountChange > 0 ? 1 : -1)} 
+                    sparklineData={generateSparklineData(company.capitalAccountChange > 0 ? 1 : -1)} 
                   />
                   <MetricCell 
                     value={`$${company.allocatedProfit.toLocaleString()}`} 
                     change={company.allocatedProfitChange.toFixed(1)} 
-                    sparklineData={generateRealisticSparklineData(company.allocatedProfitChange > 0 ? 1 : -1)} 
+                    sparklineData={generateSparklineData(company.allocatedProfitChange > 0 ? 1 : -1)} 
                   />
                   <MetricCell 
                     value={`$${company.distributions.toLocaleString()}`} 
                     change={company.distributionsChange.toFixed(1)} 
-                    sparklineData={generateRealisticSparklineData(company.distributionsChange > 0 ? 1 : -1)} 
+                    sparklineData={generateSparklineData(company.distributionsChange > 0 ? 1 : -1)} 
                   />
                   <MetricCell 
                     value={`${company.cumulativeReturn.toFixed(1)}%`} 
                     change={company.cumulativeReturnChange.toFixed(1)} 
-                    sparklineData={generateRealisticSparklineData(company.cumulativeReturnChange > 0 ? 1 : -1)} 
+                    sparklineData={generateSparklineData(company.cumulativeReturnChange > 0 ? 1 : -1)} 
                   />
                 </tr>
               ))}

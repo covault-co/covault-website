@@ -24,6 +24,7 @@
     "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.0",
     "lucide-react": "^0.441.0",
+    "react-spring": "^9.7.4",
     "recharts": "^2.13.0",
     "remark-gfm": "^4.0.0"
   }
