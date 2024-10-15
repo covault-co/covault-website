@@ -1,12 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Briefcase, Building2, MapPin, Calendar, DollarSign, Users } from 'lucide-react';
 import OperatingAgreement from './OperatingAgreement';
+
+const EntityCard = ({ data, scanProgress, company }) => {
+    return (
+        <div className="sm:bg-white rounded-lg sm:shadow-md p-1 sm:p-3 flex-grow sm:border border-dashed relative overflow-hidden h-full cursor-default">
+            <div className="items-center mb-3 gap-2 hidden sm:flex">
+                <div className="bg-yellow-300 rounded-full p-1 lg:p-1.5">
+                    <Briefcase className="w-3 h-3 lg:w-4 lg:h-4 text-zinc-900" />
+                </div>
+                <h3 className="text-xs lg:text-[14px] font-bold text-zinc-600 truncate">
+                    {company}
+                </h3>
+            </div>
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-1">
+                {data.map((item, index) => (
+                    <div key={index} className="flex flex-col p-1 rounded-md transition-colors duration-200">
+                        <span className="text-[9px] lg:text-[10px] font-medium text-gray-500">{item.key}</span>
+                        <span
+                            className="text-[10px] lg:text-[10px] text-gray-800 font-semibold transition-all duration-500 ease-in-out"
+                            style={{
+                                opacity: scanProgress >= item.position ? 1 : 0,
+                                transform: `translateY(${scanProgress >= item.position ? '0' : '10px'})`,
+                            }}
+                        >
+                            {item.value}
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 const DocumentScan = () => {
     const [activeDoc, setActiveDoc] = useState(0);
-    const [currentDocIndex, setCurrentDocIndex] = useState(0);
-    const [scanProgress, setScanProgress] = useState(0);
+    const [scanProgress, setScanProgress] = useState([0, 0, 0]);
+    const [scanStatus, setScanStatus] = useState(['Processing', 'Processing', 'Processing']);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    const [scanStatus, setScanStatus] = useState('Processing');
 
     const containerRef = useRef(null);
 
@@ -21,8 +52,8 @@ const DocumentScan = () => {
         { key: 'EIN', value: ['82-1234567', '91-7654321', '73-9876543'], position: 32 },
         { key: 'State of Formation', value: ['Delaware', 'California', 'New York'], position: 48 },
         { key: 'Fiscal Year End', value: ['December 31', 'June 30', 'September 30'], position: 60 },
-        { key: 'Initial Capital', value: ['$500,000', '$1,000,000', '$750,000'], position: 68 },
-        { key: 'Members', value: ['E. Raven (60%), L. Nova (40%)', 'A. Apex (33%), K. Apex (63%)', 'K. Apex (50%), J. Raven (50%)'], position: 85 },
+        { key: 'Initial Capital', value: ['$500,000', '$1,000,000', '$750,000'], position: 70 },
+        { key: 'Members', value: ['E. Raven (60%), L. Nova (40%)', 'A. Apex (33%), K. Apex (63%)', 'J. Smith (50%), M. Johnson (50%)'], position: 80 },
     ];
 
     useEffect(() => {
@@ -48,38 +79,38 @@ const DocumentScan = () => {
     }, []);
 
     const startAnimation = () => {
-        const animationDuration = 3000;
+        const animationDuration = 4000;
         const frameDuration = 1000 / 60;
         const totalFrames = Math.round(animationDuration / frameDuration);
         let frame = 0;
-        let docIndex = 0;
 
         const animate = () => {
             frame++;
             const progress = frame / totalFrames;
 
-            if (progress < 0.8) {
-                setScanProgress(Math.min((progress / 0.8) * 100, 100));
-                setIsTransitioning(false);
-                setScanStatus('Processing');
-            } else if (docIndex < documents.length - 1) {
+            setScanProgress(prevProgress => 
+                prevProgress.map((prog, index) => {
+                    const cardProgress = Math.min(progress * 100, 100);
+                    return cardProgress;
+                })
+            );
+
+            setScanStatus(prevStatus =>
+                prevStatus.map((status, index) => 
+                    scanProgress[index] >= 100 ? 'Complete' : 'Processing'
+                )
+            );
+
+            if (progress >= 0.95 && activeDoc < documents.length - 1) {
                 setIsTransitioning(true);
-                setScanProgress(0);
-                setScanStatus('Complete');
-                if (progress > 0.95) {
-                    docIndex++;
-                    setCurrentDocIndex(docIndex);
-                    setActiveDoc((prevDoc) => (prevDoc === 0 ? 1 : 0));
+                setTimeout(() => {
+                    setActiveDoc((prevDoc) => (prevDoc + 1) % documents.length);
+                    setIsTransitioning(false);
                     frame = 0;
-                }
-            } else {
-                // For the last document, keep it visible and set status to complete
-                setScanProgress(100);
-                setIsTransitioning(false);
-                setScanStatus('Complete');
+                }, 500);
             }
 
-            if (docIndex < documents.length - 1 || frame < totalFrames) {
+            if (activeDoc < documents.length - 1 || frame < totalFrames) {
                 requestAnimationFrame(animate);
             }
         };
@@ -112,42 +143,34 @@ const DocumentScan = () => {
                 </p>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className={`aspect-[3/4] grow max-w-[300px] min-w-[250px] md:min-w-[280px] rounded-lg shadow-inner p-4 border transition-all duration-500 border-dashed ${scanStatus === 'Complete' ? 'border-zinc-300' : 'border-zinc-200'} relative bg-white/60`} style={{ height: '400px', overflow: 'hidden' }}>
-                    <div className="absolute inset-0 p-4 z-10" style={getDocumentStyle(0)}>
-                        <OperatingAgreement
-                            scanProgress={activeDoc === 0 ? scanProgress : 0}
-                            title={`${documents[currentDocIndex].name} - ${documents[currentDocIndex].type}`}
-                        />
-                    </div>
-                    <div className="absolute inset-0 p-4 z-10" style={getDocumentStyle(1)}>
-                        <OperatingAgreement
-                            scanProgress={activeDoc === 1 ? scanProgress : 0}
-                            title={`${documents[(currentDocIndex + 1) % documents.length].name} - ${documents[(currentDocIndex + 1) % documents.length].type}`}
-                        />
-                    </div>
-                    <div className={`absolute top-0 left-0 right-0 h-full transition-all duration-500 ease-in-out  ${scanStatus === 'Complete' ? 'opacity-40' : 'opacity-20'} bg-gradient-to-t from-blue-100 to-transparent via-indigo-50 pointer-events-none rounded-lg`}></div>
-                </div>
-
-                <div>
-                    <div className="grid grid-cols-2 md:grid-cols-1 min-w-[100px]">
-                        {data.map((item, index) => (
-                            <div key={index} className="flex flex-col p-2 rounded">
-                                <span className="text-sm font-medium text-gray-400">{item.key}</span>
-                                <div className="relative overflow-hidden flex items-center">
-                                    <span
-                                        className="text-sm text-zinc-800 font-mono transition-opacity duration-500 ease-in-out"
-                                        style={{
-                                            opacity: scanProgress >= item.position ? 1 : 0,
-                                        }}
-                                    >
-                                        {item.value[currentDocIndex]}
-                                    </span>
-                                </div>
+            <div className={`aspect-[16/9] min-h-[300px] w-full rounded-lg shadow-inner p-4 border transition-all duration-500 border-dashed ${scanStatus[activeDoc] === 'Complete' ? 'border-zinc-300' : 'border-zinc-200'} relative bg-white/60 overflow-hidden`}>
+                <div className="grid grid-cols-5 gap-2 sm:gap-4 h-full overflow-hidden rounded-md">
+                    <div className="relative overflow-hidden col-span-3 md:col-span-2">
+                        {documents.map((doc, index) => (
+                            <div key={index} className="absolute inset-0" style={getDocumentStyle(index)}>
+                                <OperatingAgreement
+                                    scanProgress={activeDoc === index ? scanProgress[index] : 0}
+                                    title={`${doc.name} - ${doc.type}`}
+                                />
                             </div>
                         ))}
                     </div>
+                    <div className='col-span-2 md:col-span-3 grid grid-rows-2 gap-4'>
+                    {documents.map((doc, index) => (
+                        <EntityCard
+                            key={index}
+                            data={data.map(item => ({
+                                key: item.key,
+                                value: item.value[index],
+                                position: item.position
+                            }))}
+                            scanProgress={scanProgress[index]}
+                            company={doc.name}
+                        />
+                    ))}
+                    </div>
                 </div>
+                <div className={`absolute top-0 left-0 right-0 h-full transition-all duration-500 ease-in-out ${scanStatus[activeDoc] === 'Complete' ? 'opacity-40' : 'opacity-20'} bg-gradient-to-t from-blue-100/80 to-transparent pointer-events-none rounded-lg`}></div>
             </div>
         </div>
     );

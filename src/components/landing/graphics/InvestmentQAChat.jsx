@@ -54,7 +54,7 @@ const InvestmentQAChat = () => {
       }
     ],
     [
-      { sender: 'User', content: <p className="text-xs font-semibold text-gray-800">What's my current tax basis for Acme LLC?</p> },
+      { sender: 'User', content: <p className="text-xs font-semibold text-gray-800">What's my current tax basis for GreenEnergy Co?</p> },
       {
         sender: 'AI', content: (
           <>
@@ -81,7 +81,7 @@ const InvestmentQAChat = () => {
                 </div>
                 <div className='flex gap-2 p-1'>
                   <div className='bg-blue-700 p-1 rounded-full h-max'><FileText className='text-white' size={12} /></div>
-                  <span className='content-center'>Operating Agreement - Acme LLC</span>
+                  <span className='content-center'>Operating Agreement - GreenEnergy Co</span>
                 </div>
               </div>
             </div>

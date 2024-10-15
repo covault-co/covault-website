@@ -35,9 +35,9 @@ ARTICLE III - PROFITS, LOSSES AND DISTRIBUTIONS
   ));
 
   return (
-    <div className="h-full bg-white border rounded-md shadow-xl overflow-hidden p-6 relative hover:shadow-lg transition-all transition-200 ease cursor-default">
-      <div className="text-xs font-bold leading-4 text-gray-800 mb-2">{title}</div>
-      <div className="overflow-hidden leading-1 text-[7px]">
+    <div className="aspect-[11/16] w-full bg-white border rounded-md shadow-xl overflow-hidden p-4 sm:p-6 relative hover:shadow-lg transition-all transition-200 ease cursor-default">
+      <div className="text-[9px] leading-[9px] sm:text-xs font-bold sm:leading-4 text-gray-800 mb-2">{title}</div>
+      <div className="overflow-hidden leading[5px] sm:leading-1 text-[5px] sm:text-[7px]">
         {paragraphs}
       </div>
       <div
