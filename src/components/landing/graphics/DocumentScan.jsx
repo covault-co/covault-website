@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Briefcase, Building2, MapPin, Calendar, DollarSign, Users } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 import OperatingAgreement from './OperatingAgreement';
 
 const EntityCard = ({ data, scanProgress, company }) => {
     return (
-        <div className="sm:bg-white rounded-lg sm:shadow-md p-1 sm:p-3 flex-grow sm:border border-dashed relative overflow-hidden h-full cursor-default">
+        <div className="sm:bg-white rounded-lg p-1 sm:p-3 flex-grow sm:border border-dashed relative overflow-hidden h-full cursor-default">
             <div className="items-center mb-3 gap-2 hidden sm:flex">
                 <div className="bg-yellow-300 rounded-full p-1 lg:p-1.5">
                     <Briefcase className="w-3 h-3 lg:w-4 lg:h-4 text-zinc-900" />
@@ -144,7 +144,7 @@ const DocumentScan = () => {
             </div>
 
             <div className={`aspect-[16/9] min-h-[300px] w-full rounded-lg shadow-inner p-4 border transition-all duration-500 border-dashed ${scanStatus[activeDoc] === 'Complete' ? 'border-zinc-300' : 'border-zinc-200'} relative bg-white/60 overflow-hidden`}>
-                <div className="grid grid-cols-5 gap-2 sm:gap-4 h-full overflow-hidden rounded-md">
+                <div className="relative grid grid-cols-5 gap-2 sm:gap-4 h-full overflow-hidden rounded-md">
                     <div className="relative overflow-hidden col-span-3 md:col-span-2">
                         {documents.map((doc, index) => (
                             <div key={index} className="absolute inset-0" style={getDocumentStyle(index)}>
@@ -169,6 +169,7 @@ const DocumentScan = () => {
                         />
                     ))}
                     </div>
+                    <div className={`absolute top-0 left-0 right-0 h-full transition-all duration-500 ease-in-out bg-gradient-to-t from-white/60 via-transparent to-transparent pointer-events-none rounded-lg`}></div>
                 </div>
                 <div className={`absolute top-0 left-0 right-0 h-full transition-all duration-500 ease-in-out ${scanStatus[activeDoc] === 'Complete' ? 'opacity-40' : 'opacity-20'} bg-gradient-to-t from-blue-100/80 to-transparent pointer-events-none rounded-lg`}></div>
             </div>

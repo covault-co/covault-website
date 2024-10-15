@@ -132,7 +132,7 @@ const InvestmentQAChat = () => {
   return (
     <div className="relative w-full bg-gray-50 p-8 rounded-xl border flex flex-col gap-6">
       <div>
-        <h2 className="mt-4 text-2xl leading-6 text-black font-display tracking-tight">Instant answers to any question</h2>
+        <h2 className="mt-4 text-2xl leading-6 text-black font-display tracking-tight">Instantly answer any question</h2>
         <p className="mt-2 text-gray-500 text-xs text-pretty max-w-lg">
           Get immediate, contextual responses to any query about your investments, powered by real-time data.
         </p>
